@@ -72,11 +72,11 @@ class Instore extends \Magestore\WebposPaynl\Model\Paymentmethod\Paymentmethod
                 // Probably instore is not activated, no terminals present
             }
         }
-        array_unshift($banks, array(
+        array_unshift($banks, [
             'id' => '',
             'name' => __('Choose the pin terminal'),
             'visibleName' => __('Choose the pin terminal')
-        ));
+        ]);
         return $banks;
     }
 

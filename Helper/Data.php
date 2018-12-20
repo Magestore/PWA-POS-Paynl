@@ -7,7 +7,6 @@
 
 namespace Magestore\WebposPaynl\Helper;
 
-
 /**
  * class \Magestore\WebposPaynl\Helper\Data
  *
@@ -66,7 +65,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Magento\Framework\Stdlib\DateTime\TimezoneInterface $localeDate,
         \Magento\Framework\Stdlib\DateTime\DateTime $dateTime
-    ){
+    ) {
         $this->_storeManager = $storeManager;
         $this->_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $this->_localeDate = $localeDate;
@@ -78,7 +77,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      *
      * @return Magento store
      */
-    public function getStore(){
+    public function getStore()
+    {
         return $this->_storeManager->getStore();
     }
 
@@ -87,7 +87,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      * @param string $data
      * @return string
      */
-    public function formatCurrency($data){
+    public function formatCurrency($data)
+    {
         $currencyHelper = $this->_objectManager->get('Magento\Framework\Pricing\Helper\Data');
         return $currencyHelper->currency($data, true, false);
     }
@@ -97,7 +98,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      * @param string $data
      * @return string
      */
-    public function formatPrice($data){
+    public function formatPrice($data)
+    {
         $checkoutHelper = $this->_objectManager->get('Magento\Checkout\Helper\Data');
         return $checkoutHelper->formatPrice($data);
     }
@@ -107,7 +109,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      * @param string $data
      * @return string
      */
-    public function formatDate($data,$format = ''){
+    public function formatDate($data, $format = '')
+    {
         $format = ($format == '')?'M d,Y H:i:s a':$format;
         return $this->_localeDate->date(new \DateTime($data))->format($format);
     }
@@ -117,7 +120,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      * @param string $path
      * @return string
      */
-    public function getStoreConfig($path){
+    public function getStoreConfig($path)
+    {
         return $this->scopeConfig->getValue($path, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
     }
 
@@ -125,7 +129,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      *
      * @return string
      */
-    public function getCurrentDatetime(){
+    public function getCurrentDatetime()
+    {
         return $this->_dateTime->gmtDate();
     }
 
@@ -133,7 +138,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      * string class name
      * @return Model
      */
-    public function getModel($class){
+    public function getModel($class)
+    {
         return $this->_objectManager->get($class);
     }
 
@@ -142,21 +148,23 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      * @param string $str
      * @return string
      */
-    public function htmlEscape($str){
+    public function htmlEscape($str)
+    {
         return htmlspecialchars($str);
     }
 
     /**
      * @return array
      */
-    public function getPaynlConfig() {
-        $configData = array();
-        $configItems = array(
+    public function getPaynlConfig()
+    {
+        $configData = [];
+        $configItems = [
             'enable',
             'client_id',
             'client_secret',
             'is_sandbox',
-        );
+        ];
         foreach ($configItems as $configItem) {
             $configData[$configItem] = $this->getStoreConfig('webpos/payment/paynl/' . $configItem);
         }
@@ -166,7 +174,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     /**
      * @return bool
      */
-    public function isAllowCustomerPayWithEmail(){
+    public function isAllowCustomerPayWithEmail()
+    {
         $enable = $this->getStoreConfig('webpos/payment/paynl/enable_send_invoice');
         return ($enable)?true:false;
     }
@@ -174,7 +183,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     /**
      * @return bool
      */
-    public function isEnablePaynl(){
+    public function isEnablePaynl()
+    {
         $enable = $this->getStoreConfig('webpos/payment/paynl/enable');
         return ($enable)?true:false;
     }
@@ -182,7 +192,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     /**
      * @return bool
      */
-    public function isAllowPaypalHere(){
+    public function isAllowPaypalHere()
+    {
         $enable = $this->getStoreConfig('webpos/payment/paynl/enable');
         return ($enable)?true:false;
     }
@@ -190,9 +201,10 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     /**
      * @return array
      */
-    public function getMerchantInfo(){
-        $configData = array();
-        $configItems = array(
+    public function getMerchantInfo()
+    {
+        $configData = [];
+        $configItems = [
             'email',
             'firstname',
             'lastname',
@@ -203,7 +215,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
             'state',
             'postal_code',
             'country_id'
-        );
+        ];
         foreach ($configItems as $configItem) {
             $configData[$configItem] = $this->getStoreConfig('webpos/payment/paypal/merchant_infomation/' . $configItem);
         }
@@ -213,7 +225,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     /**
      * @return string
      */
-    public function getLogoUrl(){
+    public function getLogoUrl()
+    {
         $helper = $this->_objectManager->get('Magestore\Webpos\Helper\Data');
         $url =$helper->getWebPosImages();
         return (strpos($url, 'https') === false)?'':$url;
@@ -222,7 +235,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     /**
      * @return bool
      */
-    public function isTaxCalculatedAfterDiscount(){
+    public function isTaxCalculatedAfterDiscount()
+    {
         $configData = $this->getStoreConfig('tax/calculation/apply_after_discount');
         return ($configData == 1)?true:false;
     }
@@ -232,7 +246,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      * @param array $params
      * @return string
      */
-    public function getUrl($path, $params = array()){
+    public function getUrl($path, $params = [])
+    {
         return $this->_getUrl($path, $params);
     }
 
@@ -240,8 +255,9 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      * @param $message
      * @param string $type
      */
-    public function addLog($message, $type = ''){
-        switch ($type){
+    public function addLog($message, $type = '')
+    {
+        switch ($type) {
             case 'info':
                 $this->_logger->info($message);
                 break;
@@ -277,7 +293,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     /**
      * @return bool
      */
-    public function validateRequiredSDK(){
+    public function validateRequiredSDK()
+    {
         return (class_exists("\\Paynl\\Instore"))?true:false;
     }
 }

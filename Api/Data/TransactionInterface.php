@@ -125,5 +125,4 @@ interface TransactionInterface
      * @return string|null
      */
     public function getBankId();
-
 }

@@ -20,7 +20,8 @@ class Transaction extends \Magento\Framework\Api\AbstractExtensibleObject implem
      * @api
      * @return float|null
      */
-    public function getQuoteId(){
+    public function getQuoteId()
+    {
         return $this->_get(self::QUOTE_ID);
     }
 
@@ -31,7 +32,8 @@ class Transaction extends \Magento\Framework\Api\AbstractExtensibleObject implem
      * @param float $quoteId
      * @return $this
      */
-    public function setQuoteId($quoteId){
+    public function setQuoteId($quoteId)
+    {
         return $this->setData(self::QUOTE_ID, $quoteId);
     }
 
@@ -41,7 +43,8 @@ class Transaction extends \Magento\Framework\Api\AbstractExtensibleObject implem
      * @api
      * @return string|null
      */
-    public function getCurrency(){
+    public function getCurrency()
+    {
         return $this->_get(self::CURRENCY);
     }
 
@@ -52,7 +55,8 @@ class Transaction extends \Magento\Framework\Api\AbstractExtensibleObject implem
      * @param string $currency
      * @return $this
      */
-    public function setCurrency($currency){
+    public function setCurrency($currency)
+    {
         return $this->setData(self::CURRENCY, $currency);
     }
 
@@ -62,7 +66,8 @@ class Transaction extends \Magento\Framework\Api\AbstractExtensibleObject implem
      * @api
      * @return float|null
      */
-    public function getAmount(){
+    public function getAmount()
+    {
         return $this->_get(self::AMOUNT);
     }
 
@@ -74,7 +79,8 @@ class Transaction extends \Magento\Framework\Api\AbstractExtensibleObject implem
      * @param float $total
      * @return $this
      */
-    public function setAmount($amount){
+    public function setAmount($amount)
+    {
         return $this->setData(self::TOTAL, $amount);
     }
 
@@ -85,7 +91,8 @@ class Transaction extends \Magento\Framework\Api\AbstractExtensibleObject implem
      * @param float $total
      * @return $this
      */
-    public function setTotal($total){
+    public function setTotal($total)
+    {
         return $this->setData(self::TOTAL, $total);
     }
 
@@ -95,7 +102,8 @@ class Transaction extends \Magento\Framework\Api\AbstractExtensibleObject implem
      * @api
      * @return float|null
      */
-    public function getTotal(){
+    public function getTotal()
+    {
         return $this->_get(self::TOTAL);
     }
 
@@ -117,7 +125,8 @@ class Transaction extends \Magento\Framework\Api\AbstractExtensibleObject implem
      * @api
      * @return string|null
      */
-    public function getDescription(){
+    public function getDescription()
+    {
         return $this->_get(self::DESCRIPTION);
     }
 
@@ -139,8 +148,8 @@ class Transaction extends \Magento\Framework\Api\AbstractExtensibleObject implem
      * @api
      * @return string|null
      */
-    public function getBankId(){
+    public function getBankId()
+    {
         return $this->_get(self::BANK_ID);
     }
-
 }

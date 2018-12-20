@@ -6,6 +6,7 @@
  */
 
 namespace Magestore\WebposPaynl\Model;
+
 use Magento\Payment\Helper\Data as PaymentHelper;
 use Magento\Quote\Model\QuoteRepository;
 use Magento\Sales\Model\OrderRepository;
@@ -113,7 +114,8 @@ class PaynlService implements \Magestore\WebposPaynl\Api\PaynlServiceInterface
      * Init default data
      * @return \Magestore\WebposPaynl\Api\PaynlServiceInterface
      */
-    public function initDefaultData(){
+    public function initDefaultData()
+    {
         $successUrl = $this->helper->getUrl('webpospaynl/payment/success');
         $cancelUrl = $this->helper->getUrl('webpospaynl/payment/cancel');
         $this->setSuccessUrl($successUrl);
@@ -127,7 +129,8 @@ class PaynlService implements \Magestore\WebposPaynl\Api\PaynlServiceInterface
      * @api
      * @return string|null
      */
-    public function getSuccessUrl(){
+    public function getSuccessUrl()
+    {
         return $this->successUrl;
     }
 
@@ -138,7 +141,8 @@ class PaynlService implements \Magestore\WebposPaynl\Api\PaynlServiceInterface
      * @param string $url
      * @return $this
      */
-    public function setSuccessUrl($url){
+    public function setSuccessUrl($url)
+    {
         $this->successUrl = $url;
     }
 
@@ -148,7 +152,8 @@ class PaynlService implements \Magestore\WebposPaynl\Api\PaynlServiceInterface
      * @api
      * @return string|null
      */
-    public function getCancelUrl(){
+    public function getCancelUrl()
+    {
         return $this->cancelUrl;
     }
 
@@ -159,14 +164,16 @@ class PaynlService implements \Magestore\WebposPaynl\Api\PaynlServiceInterface
      * @param string $url
      * @return $this
      */
-    public function setCancelUrl($url){
+    public function setCancelUrl($url)
+    {
         $this->cancelUrl = $url;
     }
 
     /**
      * @return bool
      */
-    public function isEnable(){
+    public function isEnable()
+    {
         $hasSDK = $this->paynl->validateRequiredSDK();
         $configs = $this->paynl->getConfig();
         return ($hasSDK && $configs['enable'] && !empty($configs['client_id']) && !empty($configs['client_secret']))?true:false;
@@ -175,18 +182,19 @@ class PaynlService implements \Magestore\WebposPaynl\Api\PaynlServiceInterface
     /**
      * @return string
      */
-    public function getConfigurationError(){
+    public function getConfigurationError()
+    {
         $message = '';
         $hasSDK = $this->paynl->validateRequiredSDK();
         $configs = $this->paynl->getConfig();
-        if(!$hasSDK){
+        if (!$hasSDK) {
             $message = __('Paynl SDK not found, please go to the configuration to get the instruction to install the SDK');
-        }else{
-            if($configs['enable']){
-                if(empty($configs['client_id']) || empty($configs['client_secret'])){
+        } else {
+            if ($configs['enable']) {
+                if (empty($configs['client_id']) || empty($configs['client_secret'])) {
                     $message = __('Paynl application client id and client secret are required');
                 }
-            }else{
+            } else {
                 $message = __('Paynl integration is disabled');
             }
         }
@@ -197,7 +205,8 @@ class PaynlService implements \Magestore\WebposPaynl\Api\PaynlServiceInterface
      * Validate configruation
      * @return \Magestore\WebposPaynl\Api\PaynlServiceInterface
      */
-    public function validate(){
+    public function validate()
+    {
         $isEnable = $this->isEnable();
         if (!$isEnable) {
             $message = $this->getConfigurationError();
@@ -212,7 +221,8 @@ class PaynlService implements \Magestore\WebposPaynl\Api\PaynlServiceInterface
      * @param \Magestore\WebposPaynl\Api\Data\TransactionInterface $transaction
      * @return string
      */
-    public function startPayment($transaction){
+    public function startPayment($transaction)
+    {
         $this->validate();
         $total = $transaction->getTotal();
         $quoteId = $transaction->getQuoteId();
@@ -242,7 +252,8 @@ class PaynlService implements \Magestore\WebposPaynl\Api\PaynlServiceInterface
      * @param string $payerId
      * @return string
      */
-    public function finishPayment($paymentId, $payerId){
+    public function finishPayment($paymentId, $payerId)
+    {
         return $this->paynl->completePayment($paymentId, $payerId);
     }
 
@@ -250,14 +261,16 @@ class PaynlService implements \Magestore\WebposPaynl\Api\PaynlServiceInterface
      * @param string $paymentId
      * @return string
      */
-    public function finishAppPayment($paymentId){
+    public function finishAppPayment($paymentId)
+    {
         return $this->paynl->completeAppPayment($paymentId);
     }
 
     /**
      * @return bool
      */
-    public function canConnectToApi(){
+    public function canConnectToApi()
+    {
         return $this->paynl->canConnectToApi();
     }
 
@@ -271,11 +284,12 @@ class PaynlService implements \Magestore\WebposPaynl\Api\PaynlServiceInterface
      * @param string $note
      * @return \Magestore\WebposPaynl\Api\Data\InvoiceInterface
      */
-    public function createAndSendInvoiceToCustomer($billing, $shipping, $items, $totals, $totalPaid, $currencyCode, $note){
+    public function createAndSendInvoiceToCustomer($billing, $shipping, $items, $totals, $totalPaid, $currencyCode, $note)
+    {
         // validate SDK installed and some configuration, thow exception if error
         $this->validate();
         $enable = $this->helper->isAllowCustomerPayWithEmail();
-        if($enable){
+        if ($enable) {
             // prepare merchant info object
             $merchantInfoConfig = $this->helper->getMerchantInfo();
             $merchantPhoneCode = $this->phoneSource->getPhoneCodeByCountry($merchantInfoConfig['country_id']);
@@ -334,7 +348,7 @@ class PaynlService implements \Magestore\WebposPaynl\Api\PaynlServiceInterface
             foreach ($items as $item) {
                 $unitPrice = $this->paynl->createCurrency($currencyCode, $item->getUnitPrice());
                 $invoiceItem = $this->paynl->createInvoiceItem($item->getName(), $item->getQty(), $unitPrice);
-                if($item->getTaxPercent() > 0){
+                if ($item->getTaxPercent() > 0) {
                     $itemTax = $this->paynl->createPercentTax($item->getTaxPercent(), __('Tax'));
                     $invoiceItem->setTax($itemTax);
                 }
@@ -345,27 +359,27 @@ class PaynlService implements \Magestore\WebposPaynl\Api\PaynlServiceInterface
             $invoice = $this->paynl->createInvoiceObject($merchantInfo, $billingInfo, $shippingInfo, $paymentTerm, $invoiceItems, $note);
 
             // set some totals data
-            if(!empty($totals)){
+            if (!empty($totals)) {
                 $discount = 0;
-                foreach ($totals as $total){
+                foreach ($totals as $total) {
                     $amount = $total->getAmount();
                     $code = $total->getCode();
-                    if($code == 'grandtotal'){
+                    if ($code == 'grandtotal') {
                         $grandTotal = $this->paynl->createCurrency($currencyCode, $amount);
                         $invoice->setTotalAmount($grandTotal);
                     }
-                    if($code == 'shipping' && $amount > 0){
+                    if ($code == 'shipping' && $amount > 0) {
                         $shippingTaxCurrency = $this->paynl->createCurrency($currencyCode, 0);
                         $shippingTax = $this->paynl->createFixedTax($shippingTaxCurrency, __('Tax'));
                         $shippingCurrency = $this->paynl->createCurrency($currencyCode, $amount);
                         $shippingCost = $this->paynl->createShippingCost($shippingCurrency, $shippingTax);
                         $invoice->setShippingCost($shippingCost);
                     }
-                    if($amount && $amount < 0){
+                    if ($amount && $amount < 0) {
                         $discount -= floatval($amount);
                     }
                 }
-                if($discount > 0){
+                if ($discount > 0) {
                     $discountCurrency = $this->paynl->createCurrency($currencyCode, $discount);
                     $discountCost = $this->paynl->createFixedCost($discountCurrency);
                     $invoice->setDiscount($discountCost);
@@ -380,7 +394,7 @@ class PaynlService implements \Magestore\WebposPaynl\Api\PaynlServiceInterface
             $invoice = $this->paynl->createInvoice($invoice);
 
             // set total paid for invoice
-            if(!empty($totalPaid)){
+            if (!empty($totalPaid)) {
                 $totalPaid = $this->paynl->createCurrency($currencyCode, $totalPaid);
                 $paymentDetail = $this->paynl->createPaymentDetail($totalPaid, __("Paid via Magento POS system"));
                 $this->paynl->recordPaymentForInvoice($invoice, $paymentDetail);
@@ -395,13 +409,14 @@ class PaynlService implements \Magestore\WebposPaynl\Api\PaynlServiceInterface
     /**
      * @param $invoice
      */
-    protected function getInvoiceData($invoice){
+    protected function getInvoiceData($invoice)
+    {
         $data = $this->invoiceData;
-        if($invoice instanceof \PayPal\Api\Invoice){
+        if ($invoice instanceof \PayPal\Api\Invoice) {
             $data->setId($invoice->getId());
             $data->setNumber($invoice->getNumber());
             $data->setQrCode($this->paynl->getInvoiceQrCode($invoice));
-        }else{
+        } else {
             $data->setId('');
             $data->setNumber('');
             $data->setQrCode('');
@@ -414,7 +429,8 @@ class PaynlService implements \Magestore\WebposPaynl\Api\PaynlServiceInterface
      * @return \PayPal\Api\Invoice
      * @throws \Exception
      */
-    public function getInvoice($invoiceId){
+    public function getInvoice($invoiceId)
+    {
         return $this->paynl->getInvoice($invoiceId);
     }
 
@@ -422,7 +438,8 @@ class PaynlService implements \Magestore\WebposPaynl\Api\PaynlServiceInterface
      * @param \PayPal\Api\Invoice $invoice
      * @return bool
      */
-    public function isInvoicePaid($invoice){
+    public function isInvoicePaid($invoice)
+    {
         $paidStatus = ['PAID', 'MARKED_AS_PAID', 'PARTIALLY_PAID'];
         $status = $invoice->getStatus();
         return (in_array($status, $paidStatus))?true:false;
@@ -432,7 +449,8 @@ class PaynlService implements \Magestore\WebposPaynl\Api\PaynlServiceInterface
      * @param \PayPal\Api\Invoice $invoice
      * @return bool
      */
-    public function isInvoiceCancelled($invoice){
+    public function isInvoiceCancelled($invoice)
+    {
         $cancelledStatus = ['CANCELLED'];
         $status = $invoice->getStatus();
         return (in_array($status, $cancelledStatus))?true:false;
@@ -442,7 +460,8 @@ class PaynlService implements \Magestore\WebposPaynl\Api\PaynlServiceInterface
      * @param \PayPal\Api\Invoice $invoice
      * @return bool
      */
-    public function isInvoiceRefunded($invoice){
+    public function isInvoiceRefunded($invoice)
+    {
         $refundedStatus = ['REFUNDED', 'PARTIALLY_REFUNDED', 'MARKED_AS_REFUNDED'];
         $status = $invoice->getStatus();
         return (in_array($status, $refundedStatus))?true:false;
@@ -452,7 +471,8 @@ class PaynlService implements \Magestore\WebposPaynl\Api\PaynlServiceInterface
      * @param \PayPal\Api\Invoice $invoice
      * @return \PayPal\Api\PaymentSummary
      */
-    public function getInvoicePaidAmount($invoice){
+    public function getInvoicePaidAmount($invoice)
+    {
         return $invoice->getPaidAmount();
     }
 
@@ -460,14 +480,16 @@ class PaynlService implements \Magestore\WebposPaynl\Api\PaynlServiceInterface
      * @param \PayPal\Api\Invoice $invoice
      * @return \PayPal\Api\PaymentSummary
      */
-    public function getInvoiceRefundedAmount($invoice){
+    public function getInvoiceRefundedAmount($invoice)
+    {
         return $invoice->getRefundedAmount();
     }
 
     /**
      * @return string
      */
-    public function getAccessToken(){
+    public function getAccessToken()
+    {
         return $this->paynl->getAccessToken();
     }
 }

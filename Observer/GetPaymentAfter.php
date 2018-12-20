@@ -26,7 +26,7 @@ class GetPaymentAfter implements ObserverInterface
         $payments = $observer->getData('payments');
         $paymentList = $payments->getList();
         $isPaynlEnable = $paynlHelper->isEnablePaynl();
-        if($isPaynlEnable) {
+        if ($isPaynlEnable) {
             $paynlPayment = $this->addWebposPaynl();
             $paymentList[] = $paynlPayment->getData();
         }
@@ -62,5 +62,4 @@ class GetPaymentAfter implements ObserverInterface
         $paymentModel->setIsSandbox($isSandbox);
         return $paymentModel;
     }
-
 }

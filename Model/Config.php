@@ -5,6 +5,7 @@
  */
 
 namespace Magestore\WebposPaynl\Model;
+
 use Magento\Framework\App\Config\ScopeConfigInterface;
 
 /**
@@ -21,8 +22,7 @@ class Config
 
     public function __construct(
         ScopeConfigInterface $configInterface
-    )
-    {
+    ) {
         $this->_scopeConfigInterface = $configInterface;
     }
 
@@ -44,12 +44,14 @@ class Config
     {
         return $this->_scopeConfigInterface->getValue('payment/paynl/never_cancel', 'store') == 1;
     }
-    public function getLanguage(){
+    public function getLanguage()
+    {
         $language = $this->_scopeConfigInterface->getValue('payment/paynl/language', 'store');
         return $language?$language:'nl'; //default nl
     }
 
-    public function getPaymentOptionId($methodCode){
+    public function getPaymentOptionId($methodCode)
+    {
         return $this->_scopeConfigInterface->getValue('payment/'.$methodCode.'/payment_option_id', 'store');
     }
 
@@ -58,11 +60,12 @@ class Config
      *
      * @return bool TRUE when config loaded, FALSE when the apitoken or serviceId are empty
      */
-    public function configureSDK(){
+    public function configureSDK()
+    {
         if ($this->validateRequiredSDK()) {
             $apiToken = $this->getApiToken();
             $serviceId = $this->getServiceId();
-            if(!empty($apiToken) && !empty($serviceId)){
+            if (!empty($apiToken) && !empty($serviceId)) {
                 \Paynl\Config::setApiToken($apiToken);
                 \Paynl\Config::setServiceId($serviceId);
                 return true;
@@ -75,7 +78,8 @@ class Config
     /**
      * @return bool
      */
-    public function validateRequiredSDK(){
+    public function validateRequiredSDK()
+    {
         return (class_exists("\\Paynl\\Instore"))?true:false;
     }
 }

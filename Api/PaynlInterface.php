@@ -151,14 +151,14 @@ interface PaynlInterface
     public function createBillingInfo($email, $firstname, $lastname, $businessName, $phone, $addtionalInfo = '', $invoiceAddress);
 
         /**
-     * @param string $line1
-     * @param string $line2
-     * @param string $city
-     * @param string $state
-     * @param string $postalCode
-     * @param string $countryCode
-     * @return \PayPal\Api\InvoiceAddress
-     */
+         * @param string $line1
+         * @param string $line2
+         * @param string $city
+         * @param string $state
+         * @param string $postalCode
+         * @param string $countryCode
+         * @return \PayPal\Api\InvoiceAddress
+         */
     public function createInvoiceAddress($line1, $line2, $city, $state, $postalCode, $countryCode);
 
     /**
@@ -262,6 +262,4 @@ interface PaynlInterface
      * @throws \Exception
      */
     public function getAccessToken();
-
-
 }

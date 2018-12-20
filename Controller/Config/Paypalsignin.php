@@ -40,11 +40,11 @@ class Paynlsignin extends \Magento\Framework\App\Action\Action
      */
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
-        \Magento\Framework\App\Config\ConfigResource\ConfigInterface  $resourceConfig,
+        \Magento\Framework\App\Config\ConfigResource\ConfigInterface $resourceConfig,
         \Magestore\WebposPaynl\Model\Paynl $paynl,
         \Magento\Framework\App\Cache\TypeListInterface $cacheTypeList,
         \Magento\Framework\Controller\Result\RawFactory $resultRawFactory
-    ){
+    ) {
         parent::__construct($context);
         $this->resourceConfig = $resourceConfig;
         $this->paynl = $paynl;
@@ -62,7 +62,7 @@ class Paynlsignin extends \Magento\Framework\App\Action\Action
         $authCode = $this->getRequest()->getParam('code');
         $tokenInfo = '';
         $result = '';
-        if($authCode) {
+        if ($authCode) {
             try {
                 $tokenInfo = $this->paypal->getTokenInfo($authCode);
             } catch (\PayPal\Exception\PayPalConnectionException $ex) {
@@ -78,7 +78,7 @@ class Paynlsignin extends \Magento\Framework\App\Action\Action
                 $response->setHeader('Content-type', 'text/plain');
                 $response->setContents($ex->getMessage());
             }
-            if($tokenInfo) {
+            if ($tokenInfo) {
                 $accessToken = $tokenInfo->access_token;
                 $refreshToken = $tokenInfo->refresh_token;
                 if ($accessToken) {
